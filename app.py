@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import json
 import os
 from datetime import datetime
@@ -7,6 +7,14 @@ app = Flask(__name__)
 
 # Configuración del archivo de datos
 COURSES_FILE = 'courses.json'
+
+# ============================================================
+# RUTAS DE LA INTERFAZ
+# ============================================================
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 # ============================================================
 # FUNCIONES DE PERSISTENCIA (MANEJO DEL ARCHIVO JSON)
@@ -63,10 +71,10 @@ def create_course():
             return jsonify({"error": f"El campo '{field}' es requerido"}), 400
             
     # Validar valores permitidos para 'status'
-    valid_statuses = ["No Comenzado", "En Progreso", "Completado"]
+    valid_statuses = ["Not Started", "In Progress", "Completed"]
     if data['status'] not in valid_statuses:
         return jsonify({
-            "error": f"Estado inválido. Debe ser uno de: {', '.join(valid_statuses)}"
+            "error": f"Invalid status. Must be one of: {', '.join(valid_statuses)}"
         }), 400
 
     courses = load_courses()
@@ -124,10 +132,10 @@ def update_course(course_id):
         
     # Validar 'status' si se intenta actualizar
     if 'status' in data:
-        valid_statuses = ["No Comenzado", "En Progreso", "Completado"]
+        valid_statuses = ["Not Started", "In Progress", "Completed"]
         if data['status'] not in valid_statuses:
             return jsonify({
-                "error": f"Estado inválido. Debe ser uno de: {', '.join(valid_statuses)}"
+                "error": f"Invalid status. Must be one of: {', '.join(valid_statuses)}"
             }), 400
 
     # Actualizar campos (solo si están presentes en la petición)
@@ -163,9 +171,9 @@ def get_stats():
     stats = {
         "total_courses": len(courses),
         "by_status": {
-            "No Comenzado": len([c for c in courses if c['status'] == "No Comenzado"]),
-            "En Progreso": len([c for c in courses if c['status'] == "En Progreso"]),
-            "Completado": len([c for c in courses if c['status'] == "Completado"])
+            "Not Started": len([c for c in courses if c['status'] == "Not Started"]),
+            "In Progress": len([c for c in courses if c['status'] == "In Progress"]),
+            "Completed": len([c for c in courses if c['status'] == "Completed"])
         }
     }
     
