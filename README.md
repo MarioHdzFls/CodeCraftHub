@@ -29,7 +29,7 @@ Antes de empezar, asegúrate de tener instalado:
 1. **Clonar o descargar el proyecto:**
    Si tienes Git:
    ```bash
-   git clone [https://github.com/tu-usuario/codecraft-hub.git](https://github.com/MarioHdzFls/CodeCraftHub.git)
+   git clone https://github.com/MarioHdzFls/CodeCraftHub.git
    cd codecraft-hub
    ```
 
