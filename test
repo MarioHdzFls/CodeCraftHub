@@ -1,0 +1,95 @@
+He preparado una guía completa de pruebas para tu API de CodeCraftHub. Estos comandos están diseñados para ser ejecutados en una terminal (Git Bash, CMD o PowerShell en Windows).
+
+  Asegúrate de tener la aplicación corriendo (python app.py) antes de ejecutar estas pruebas.
+
+  ---
+
+  1. Escenarios de Éxito (Happy Path)
+
+
+  A. Crear un nuevo curso (POST)
+  Este comando agregará el primer curso a tu base de datos.
+
+
+   1 curl -X POST http://localhost:5000/api/courses \
+   2      -H "Content-Type: application/json" \
+   3      -d '{"name": "Curso de Python", "description": "Aprende Flask desde cero", "target_date": "2024-06-30", "status": "No
+     Comenzado"}'
+   * Respuesta esperada (201 Created):
+
+
+   1     {
+   2       "id": 1,
+   3       "name": "Curso de Python",
+   4       "description": "Aprende Flask desde cero",
+   5       "target_date": "2024-06-30",
+   6       "status": "No Comenzado",
+   7       "created_at": "2024-03-25 10:00:00"
+   8     }
+
+
+  B. Obtener todos los cursos (GET)
+   1 curl -X GET http://localhost:5000/api/courses
+   * Respuesta esperada (200 OK): Una lista [] que contiene el curso creado anteriormente.
+
+
+  C. Obtener un curso específico (GET por ID)
+   1 curl -X GET http://localhost:5000/api/courses/1
+   * Respuesta esperada (200 OK): El objeto JSON del curso con ID 1.
+
+  D. Actualizar un curso (PUT)
+  Cambiemos el estado del curso a "En Progreso".
+
+
+   1 curl -X PUT http://localhost:5000/api/courses/1 \
+   2      -H "Content-Type: application/json" \
+   3      -d '{"status": "En Progreso", "description": "Actualizado: Aprende Flask y APIs"}'
+   * Respuesta esperada (200 OK): El curso con los campos status y description actualizados.
+
+  E. Eliminar un curso (DELETE)
+   1 curl -X DELETE http://localhost:5000/api/courses/1
+   * Respuesta esperada (200 OK):
+
+
+   1     {"message": "Curso con ID 1 eliminado correctamente"}
+
+  ---
+
+  2. Escenarios de Error (Pruebas de Robustez)
+
+  Error: Campos Faltantes (POST)
+  Intentamos crear un curso sin el campo name.
+
+
+   1 curl -X POST http://localhost:5000/api/courses \
+   2      -H "Content-Type: application/json" \
+   3      -d '{"description": "Sin nombre", "target_date": "2024-12-31", "status": "No Comenzado"}'
+   * Respuesta esperada (400 Bad Request):
+   1     {"error": "El campo 'name' es requerido"}
+
+  Error: Estado Inválido (POST o PUT)
+  Intentamos usar un estado que no está en la lista permitida.
+
+
+   1 curl -X POST http://localhost:5000/api/courses \
+   2      -H "Content-Type: application/json" \
+   3      -d '{"name": "Test", "description": "Test", "target_date": "2024-12-31", "status": "Casi Terminado"}'
+   * Respuesta esperada (400 Bad Request):
+   1     {"error": "Estado inválido. Debe ser uno de: No Comenzado, En Progreso, Completado"}
+
+
+  Error: Curso no encontrado (GET/PUT/DELETE)
+  Buscamos un ID que no existe (ejemplo: ID 999).
+   1 curl -X GET http://localhost:5000/api/courses/999
+   * Respuesta esperada (404 Not Found):
+   1     {"error": "Curso no encontrado"}
+
+  ---
+
+
+  Consejos para principiantes:
+   1. Windows PowerShell: Si usas PowerShell y el comando curl te da errores con las comillas simples ', prueba a usar comillas
+      dobles externas y escapar las internas: "{\"name\": \"Curso\"}".
+   2. JSON Formatter: Para leer las respuestas más fácilmente en la terminal, puedes instalar jq y añadir | jq al final de tus
+      comandos curl.
+   3. Orden de las pruebas: Sigue el orden de la sección 1 para ver cómo el archivo courses.json cambia dinámicamente.

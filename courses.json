@@ -1,0 +1,10 @@
+[
+    {
+        "id": 1,
+        "name": "Django Avanzado",
+        "description": "Aprende a construir aplicaciones web con Django",
+        "target_date": "2024-07-15",
+        "status": "No Comenzado",
+        "created_at": "2026-03-16 23:58:29"
+    }
+]
